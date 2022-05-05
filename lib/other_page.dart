@@ -1,14 +1,21 @@
 import 'package:flutter/material.dart';
 
 class OtherPage extends StatelessWidget {
-  const OtherPage({Key? key}) : super(key: key);
+
+   OtherPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Other'),
+      ),
+      body: Center(
         child: Text(
-      'Other Page',
-      style: TextStyle(fontSize: 50.0),
-    ));
+          'Other',
+          style: TextStyle(fontSize: 52.0),
+        ),
+      ),
+    );
   }
 }
