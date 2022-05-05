@@ -1,4 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_new_series/other_page.dart';
+
+import 'bloc/counter/counter_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'bloc/counter/counter_event.dart';
+import 'bloc/counter/counter_state.dart';
 
 void main() {
   runApp(App());
@@ -9,39 +16,64 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter New Series',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+    return BlocProvider<CounterBloc>(
+      create: (context) => CounterBloc(),
+      child: MaterialApp(
+        title: 'Flutter New Series',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        home: MyHomePage(),
       ),
-      home: MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatelessWidget {
-
   MyHomePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: const Center(
-        child: Text(
-          'Count',
-          style: TextStyle(fontSize: 50.0),
+      body: Center(
+        child: BlocConsumer<CounterBloc, CounterState>(
+          listener: (context, state) {
+            if (state.counter == 3) {
+              showDialog(
+                  context: context,
+                  builder: (_) {
+                    return AlertDialog(
+                      content: Text(state.counter.toString()),
+                    );
+                  });
+            } else if (state.counter == -1) {
+              Navigator.push(context, MaterialPageRoute(builder: (_) {
+                return OtherPage();
+              }));
+            }
+          },
+          builder: (context, state) {
+            return Text(
+              '${state.counter}',
+              style: TextStyle(fontSize: 50.0),
+            );
+          },
         ),
       ),
       floatingActionButton: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           FloatingActionButton(
-            onPressed: () => {},
+            onPressed: () {
+              context.read<CounterBloc>().add(IncrementCounterEvent());
+            },
             tooltip: 'Increment',
             child: const Icon(Icons.add),
           ),
           FloatingActionButton(
-            onPressed: () => {},
+            onPressed: () {
+              context.read<CounterBloc>().add(DecrementCounterEvent());
+            },
             tooltip: 'Decrement',
             child: const Icon(Icons.remove),
           )
