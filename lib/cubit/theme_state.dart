@@ -1,4 +1,7 @@
-part of 'theme_bloc.dart';
+
+
+import 'package:equatable/equatable.dart';
+
 
 enum AppTheme { light, dart }
 
@@ -19,7 +22,7 @@ class ThemeState extends Equatable{
   }
 
   const ThemeState({
-     this.appTheme = AppTheme.light,
+    this.appTheme = AppTheme.light,
   });
 
   ThemeState copyWith({
