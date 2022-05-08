@@ -1,51 +1,58 @@
 import 'package:flutter/material.dart';
+import 'dart:math';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'bloc/themes/theme_bloc.dart';
 
 void main() {
-  runApp(App());
+  runApp(const MyApp());
 }
 
-class App extends StatelessWidget {
-  const App({Key? key}) : super(key: key);
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter New Series',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+    return BlocProvider<ThemeBloc>(
+      create: (context) => ThemeBloc(),
+      child: Builder(
+        builder: (context) {
+          return MaterialApp(
+            title: 'Event Payload',
+            debugShowCheckedModeBanner: false,
+            theme: context.watch<ThemeBloc>().state.appTheme == AppTheme.light
+                ? ThemeData.light()
+                : ThemeData.dark(),
+            home: const MyHomePage(),
+          );
+        }
       ),
-      home: MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatelessWidget {
-
-  MyHomePage({Key? key}) : super(key: key);
+  const MyHomePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: const Center(
-        child: Text(
-          'Count',
-          style: TextStyle(fontSize: 50.0),
-        ),
+      appBar: AppBar(
+        title: Text('Theme'),
       ),
-      floatingActionButton: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          FloatingActionButton(
-            onPressed: () => {},
-            tooltip: 'Increment',
-            child: const Icon(Icons.add),
+      body: Center(
+        child: ElevatedButton(
+          child: Text(
+            'Change Theme',
+            style: TextStyle(fontSize: 24.0),
           ),
-          FloatingActionButton(
-            onPressed: () => {},
-            tooltip: 'Decrement',
-            child: const Icon(Icons.remove),
-          )
-        ],
+          onPressed: () {
+            final int randInt = Random().nextInt(10);
+            print('randInt: $randInt');
+            context.read<ThemeBloc>().add(ChangeThemeEvent(randInt: randInt));
+            // BlocProvider.of<ThemeBloc>(context).add(ChangeThemeEvent(randInt: randInt));
+          },
+        ),
       ),
     );
   }
